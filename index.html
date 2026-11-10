@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CueBank</title>
+<meta name="description" content="Turn the practice questions you already have into an exam-style question bank. For Mac, Windows and Linux.">
+<link rel="icon" href="icon.png">
+<!--
+  Download links point at the latest release of lbhickman/cuebank and pick the
+  .dmg, .exe or .AppImage automatically. Before going live, replace the three
+  screenshot placeholders with real images.
+-->
+<style>
+  :root {
+    --bg: #f6f8fb;
+    --surface: #ffffff;
+    --surface-2: #eef2f8;
+    --text: #12203a;
+    --muted: #55617a;
+    --border: #d9e0ea;
+    --navy: #13294b;
+    --accent: #1f5fbf;
+    --accent-text: #ffffff;
+    --coffee: #ffdd00;
+    --coffee-text: #1b1b1b;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1524;
+      --surface: #15203a;
+      --surface-2: #1b2846;
+      --text: #e8edf6;
+      --muted: #a3afc5;
+      --border: #2a3a5c;
+      --navy: #0a1730;
+      --accent: #5b9bff;
+      --accent-text: #0b1426;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1524; --surface: #15203a; --surface-2: #1b2846; --text: #e8edf6;
+    --muted: #a3afc5; --border: #2a3a5c; --navy: #0a1730; --accent: #5b9bff; --accent-text: #0b1426;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; color: var(--text); text-decoration: none; }
+  .brand img { width: 34px; height: 34px; border-radius: 8px; }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: .95rem; }
+  nav a:hover { color: var(--text); }
+
+  .hero { text-align: center; padding: 48px 0 56px; }
+  .hero img.app-icon { width: 112px; height: 112px; border-radius: 24px; box-shadow: 0 10px 30px rgba(19,41,75,.25); }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 22px 0 12px; letter-spacing: -0.02em; }
+  .hero p.lede { font-size: 1.15rem; color: var(--muted); max-width: 640px; margin: 0 auto 28px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: 999px;
+    background: var(--accent); color: var(--accent-text); font-weight: 650; font-size: 1.05rem;
+    text-decoration: none; border: 0; cursor: pointer;
+  }
+  .btn:hover { filter: brightness(1.07); }
+  .btn svg { width: 20px; height: 20px; }
+  .alt-links { margin-top: 14px; font-size: .92rem; color: var(--muted); }
+  .alt-links a { margin: 0 6px; }
+  .small-note { margin-top: 10px; font-size: .85rem; color: var(--muted); }
+
+  section { padding: 48px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 1.6rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .section-lede { color: var(--muted); margin: 0 0 28px; max-width: 680px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .steps .card::before {
+    counter-increment: step; content: counter(step);
+    display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--navy); color: #fff; font-weight: 700; margin-bottom: 10px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .shot {
+    aspect-ratio: 16 / 10; border-radius: var(--radius); border: 2px dashed var(--border);
+    background: var(--surface-2); display: grid; place-items: center; text-align: center;
+    color: var(--muted); font-size: .9rem; padding: 12px;
+  }
+  .shot-caption { margin-top: 8px; font-size: .9rem; color: var(--muted); text-align: center; }
+
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 28px; }
+  .feature { display: flex; gap: 12px; }
+  .feature .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-top: 9px; }
+  .feature b { display: block; }
+  .feature span { color: var(--muted); font-size: .95rem; }
+
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 12px; }
+  summary { cursor: pointer; font-weight: 650; }
+  details ol, details p { color: var(--muted); margin: 10px 0 0; }
+  details li { margin: 4px 0; }
+
+  .support { text-align: center; }
+  .support p { color: var(--muted); max-width: 600px; margin: 0 auto 22px; }
+  .btn-coffee { background: var(--coffee); color: var(--coffee-text); }
+
+  footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: .88rem; }
+  footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+  @media (max-width: 760px) {
+    nav { display: none; }
+    .steps, .shots, .features { grid-template-columns: 1fr; }
+    .hero { padding: 28px 0 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="icon.png" alt="">CueBank</a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#install">Install help</a>
+      <a href="#support">Support</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <img class="app-icon" src="icon.png" alt="CueBank app icon">
+      <h1>All your practice questions,<br>in one place.</h1>
+      <p class="lede">CueBank turns the multiple-choice questions you already have into an exam-style question bank. Build practice blocks, study in Tutor or Test mode, and see exactly where you're weak.</p>
+      <a id="primary-download" class="btn" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        <span id="primary-label">Download for Mac</span>
+      </a>
+      <div class="alt-links" id="alt-links">
+        Also for <a data-os="win" href="#">Windows</a> · <a data-os="linux" href="#">Linux</a> · <a id="all-releases" href="#">All versions</a>
+      </div>
+      <div class="small-note" id="version-note">macOS 11 or later · Apple silicon and Intel</div>
+    </div>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p class="section-lede">Bring your own questions: a class exam, board review, SAT, ACT, MCAT or AP prep, or questions an AI assistant pulled out of a PDF.</p>
+      <div class="steps">
+        <div class="card">
+          <h3>Get your questions into a file</h3>
+          <p>CueBank gives you copy-ready instructions for ChatGPT, Claude, Gemini or another assistant to turn your notes or PDFs into a simple Markdown file.</p>
+        </div>
+        <div class="card">
+          <h3>Import into a bank</h3>
+          <p>Keep separate banks for each exam. Re-import an expanded file any time and your progress on older questions stays put.</p>
+        </div>
+        <div class="card">
+          <h3>Practice like it's test day</h3>
+          <p>Pick unused, incorrect or marked questions, filter by subject, and work through blocks of up to 100 in a familiar exam layout.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screens">
+      <h2>See it in action</h2>
+      <p class="section-lede">A clean, distraction-free layout that feels like the real exam.</p>
+      <div class="shots">
+        <div><div class="shot">Screenshot placeholder<br>Question view with reference panel</div><div class="shot-caption">Answer in an exam-style interface</div></div>
+        <div><div class="shot">Screenshot placeholder<br>Create Test screen</div><div class="shot-caption">Build blocks from any mix of pools</div></div>
+        <div><div class="shot">Screenshot placeholder<br>Performance by subject</div><div class="shot-caption">Find your weak spots</div></div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>Features</h2>
+      <p class="section-lede">Everything you need to drill questions, nothing you don't.</p>
+      <div class="features">
+        <div class="feature"><i class="dot"></i><div><b>Tutor and Test modes</b><span>See the explanation after each question, or review everything at the end.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Smart pools</b><span>Unused, Incorrect, Marked, Omitted and Correct, in any combination.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Answer choices reshuffle on repeats</b><span>So you learn the content, not the letter.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Shared passages and cases</b><span>Reading passages and data sets stay beside their questions.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Reference panel</b><span>Lab values, periodic table, math formulas, or your own custom sheet.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Rich explanations</b><span>Tables, images, math, and an educational objective for each question.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Performance tracking</b><span>Results by subject tag and by source.</span></div></div>
+        <div class="feature"><i class="dot"></i><div><b>Private by design</b><span>Your banks live on your computer. No account, no sign-up.</span></div></div>
+      </div>
+    </section>
+
+    <section id="install">
+      <h2>Install help</h2>
+      <p class="section-lede">CueBank isn't distributed through an app store yet, so your computer will ask you to confirm the first time you open it.</p>
+
+      <details open>
+        <summary>Mac: first launch</summary>
+        <ol>
+          <li>Open the downloaded <b>.dmg</b> file and drag <b>CueBank</b> into <b>Applications</b>.</li>
+          <li>Double-click CueBank. When macOS says it can't verify the developer, click <b>Done</b>.</li>
+          <li>Open <b>System Settings → Privacy &amp; Security</b>, scroll down to <b>Security</b>, and click <b>Open Anyway</b> next to CueBank. (The button appears for about an hour after you try to open the app.)</li>
+          <li>Enter your Mac password, then click <b>Open</b>. After this, CueBank opens normally.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>Windows: first launch</summary>
+        <ol>
+          <li>Run the downloaded installer (<b>CueBank_…_x64-setup.exe</b>).</li>
+          <li>If Windows shows "Windows protected your PC," click <b>More info</b>, then <b>Run anyway</b>.</li>
+          <li>Follow the installer, then open CueBank from the Start menu.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>Linux</summary>
+        <ol>
+          <li>Download the <b>.AppImage</b> file.</li>
+          <li>Make it executable (right-click → Properties → Allow executing, or <code>chmod +x CueBank_*.AppImage</code>), then double-click it.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>Does CueBank come with questions?</summary>
+        <p>No. CueBank is the study tool; you bring the questions. Please only import questions you have the right to use, such as your own notes, class materials your instructor shared, or content you've licensed. The import screen includes a sample file so you can try it out first.</p>
+      </details>
+
+      <details>
+        <summary>Where is my data stored? How do I back it up?</summary>
+        <p>Everything stays on your computer. On the start screen, use <b>Backup</b> to save a bank with all your progress, and <b>Restore</b> to bring it back on a new computer.</p>
+      </details>
+    </section>
+
+    <section id="support" class="support">
+      <h2>Help keep CueBank growing</h2>
+      <p>CueBank is built by one developer in their spare time. If it helps you study, a tip goes straight toward new features.</p>
+      <a class="btn btn-coffee" href="https://buymeacoffee.com/lbrianhickman" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="row">
+      <span>© 2026 L. Brian Hickman. All rights reserved.</span>
+      <span>CueBank is not affiliated with any exam, test-maker or question-bank company.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ---- Configure ----
+  const RELEASES_REPO = "lbhickman/cuebank";   // repo whose Releases hold the installers
+  const ASSETS = {
+    mac:   { match: /\.dmg$/i,                 label: "Download for Mac",     note: "macOS 11 or later · Apple silicon and Intel" },
+    win:   { match: /-setup\.exe$|\.exe$/i,    label: "Download for Windows", note: "Windows 10 or later" },
+    linux: { match: /\.AppImage$/i,            label: "Download for Linux",   note: "AppImage for most distributions" }
+  };
+  // -------------------
+
+  // Every link starts on the latest release page, then switches to the direct file
+  // once GitHub reports what the latest release contains.
+  const base = "https://github.com/" + RELEASES_REPO + "/releases";
+  const latestPage = base + "/latest";
+  const names = { mac: "Mac", win: "Windows", linux: "Linux" };
+  const links = { mac: [], win: [], linux: [] };
+
+  function detectOS() {
+    const p = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || "";
+    if (/win/i.test(p)) return "win";
+    if (/linux|x11/i.test(p) && !/android/i.test(navigator.userAgent)) return "linux";
+    return "mac"; // default; also covers iPhone/iPad visitors, who can send the link to their computer
+  }
+
+  const os = detectOS();
+  const primary = document.getElementById("primary-download");
+  primary.href = latestPage;
+  links[os].push(primary);
+  document.getElementById("primary-label").textContent = ASSETS[os].label;
+  document.getElementById("version-note").textContent = ASSETS[os].note;
+
+  // The other two platforms as secondary links.
+  const alt = document.getElementById("alt-links");
+  alt.innerHTML = "";
+  alt.append("Also for ");
+  Object.keys(ASSETS).filter(k => k !== os).forEach((k, i) => {
+    const a = document.createElement("a");
+    a.href = latestPage; a.textContent = names[k];
+    links[k].push(a);
+    if (i > 0) alt.append(" · ");
+    alt.append(a);
+  });
+  alt.append(" · ");
+  const all = document.createElement("a");
+  all.href = base; all.textContent = "All versions";
+  alt.append(all);
+
+  fetch("https://api.github.com/repos/" + RELEASES_REPO + "/releases/latest")
+    .then(r => r.ok ? r.json() : null)
+    .then(rel => {
+      if (!rel || !Array.isArray(rel.assets)) return;
+      Object.keys(ASSETS).forEach(k => {
+        const asset = rel.assets.find(a => ASSETS[k].match.test(a.name));
+        if (asset) links[k].forEach(el => { el.href = asset.browser_download_url; });
+      });
+      if (rel.tag_name) {
+        document.getElementById("version-note").textContent =
+          "Version " + rel.tag_name.replace(/^v/, "") + " · " + ASSETS[os].note;
+      }
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
