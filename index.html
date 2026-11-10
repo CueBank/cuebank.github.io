@@ -92,6 +92,10 @@
     background: var(--surface-2); display: grid; place-items: center; text-align: center;
     color: var(--muted); font-size: .9rem; padding: 12px;
   }
+  .shot-img {
+    display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left;
+    border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface);
+  }
   .shot-caption { margin-top: 8px; font-size: .9rem; color: var(--muted); text-align: center; }
 
   .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 28px; }
@@ -170,8 +174,8 @@
       <p class="section-lede">A clean, distraction-free layout that feels like the real exam.</p>
       <div class="shots">
         <div><div class="shot">Screenshot placeholder<br>Question view with reference panel</div><div class="shot-caption">Answer in an exam-style interface</div></div>
-        <div><div class="shot">Screenshot placeholder<br>Create Test screen</div><div class="shot-caption">Build blocks from any mix of pools</div></div>
-        <div><div class="shot">Screenshot placeholder<br>Performance by subject</div><div class="shot-caption">Find your weak spots</div></div>
+        <div><a href="img/create-test.png" target="_blank" rel="noopener"><img class="shot-img" src="img/create-test.png" alt="CueBank Create Test screen with question pools, subject tags and sources" loading="lazy" width="1600" height="1000"></a><div class="shot-caption">Build blocks from any mix of pools</div></div>
+        <div><a href="img/performance.png" target="_blank" rel="noopener"><img class="shot-img" src="img/performance.png" alt="CueBank Performance screen with score, bank usage and results by subject" loading="lazy" width="1600" height="1074"></a><div class="shot-caption">Find your weak spots</div></div>
       </div>
     </section>
 
