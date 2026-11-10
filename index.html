@@ -56,6 +56,23 @@
   .brand img { width: 34px; height: 34px; border-radius: 8px; }
   nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: .95rem; }
   nav a:hover { color: var(--text); }
+  .top-right { display: flex; align-items: center; gap: 18px; }
+  .nav-support {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: .9rem; font-weight: 600;
+  }
+  .nav-support:hover { border-color: var(--muted); }
+  .hero-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-outline:hover { filter: none; border-color: var(--muted); }
+  .support-line { margin-top: 14px; font-size: .9rem; color: var(--muted); }
+  .support-line a { font-weight: 600; }
+  .thanks {
+    max-width: 520px; margin: 22px auto 0; padding: 14px 18px; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border); font-size: .95rem; color: var(--muted);
+  }
+  .thanks b { color: var(--text); }
+  .thanks .btn { margin-top: 10px; padding: 9px 18px; font-size: .95rem; }
 
   .hero { text-align: center; padding: 48px 0 56px; }
   .hero img.app-icon { width: 112px; height: 112px; border-radius: 24px; box-shadow: 0 10px 30px rgba(19,41,75,.25); }
@@ -120,6 +137,7 @@
     nav { display: none; }
     .steps, .shots, .features { grid-template-columns: 1fr; }
     .hero { padding: 28px 0 40px; }
+    .hero-buttons .btn { width: 100%; max-width: 340px; justify-content: center; }
   }
 </style>
 </head>
@@ -127,12 +145,14 @@
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#"><img src="icon.png" alt="">CueBank</a>
-    <nav>
-      <a href="#how">How it works</a>
-      <a href="#features">Features</a>
-      <a href="#install">Install help</a>
-      <a href="#support">Support</a>
-    </nav>
+    <div class="top-right">
+      <nav>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#install">Install help</a>
+      </nav>
+      <a class="nav-support" href="https://buymeacoffee.com/lbrianhickman" target="_blank" rel="noopener">☕ Support</a>
+    </div>
   </header>
 
   <main>
@@ -140,14 +160,22 @@
       <img class="app-icon" src="icon.png" alt="CueBank app icon">
       <h1>All your practice questions,<br>in one place.</h1>
       <p class="lede">CueBank turns the multiple-choice questions you already have into an exam-style question bank. Build practice blocks, study in Tutor or Test mode, and see which topics need more review.</p>
+      <div class="hero-buttons">
       <a id="primary-download" class="btn" href="#">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
         <span id="primary-label">Download for Mac</span>
       </a>
+      <a class="btn btn-outline" href="https://buymeacoffee.com/lbrianhickman" target="_blank" rel="noopener">☕ Support CueBank</a>
+      </div>
       <div class="alt-links" id="alt-links">
         Also for <a data-os="win" href="#">Windows</a> · <a data-os="linux" href="#">Linux</a> · <a id="all-releases" href="#">All versions</a>
       </div>
       <div class="small-note" id="version-note">macOS 11 or later · Apple silicon and Intel</div>
+      <div class="support-line">Built by one developer. Tips go straight to new features.</div>
+      <div class="thanks" id="thanks" role="status" hidden>
+        <b>Thanks for downloading CueBank!</b> If CueBank helps you study, a tip helps fund the next features.<br>
+        <a class="btn btn-coffee" href="https://buymeacoffee.com/lbrianhickman" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      </div>
     </div>
 
     <section id="how">
@@ -297,6 +325,12 @@
   const all = document.createElement("a");
   all.href = base; all.textContent = "All versions";
   alt.append(all);
+
+  // Gentle inline thank-you after a download click (no popup).
+  const thanks = document.getElementById("thanks");
+  [].concat(links.mac, links.win, links.linux).forEach(el => {
+    el.addEventListener("click", () => { thanks.hidden = false; });
+  });
 
   fetch("https://api.github.com/repos/" + RELEASES_REPO + "/releases/latest")
     .then(r => r.ok ? r.json() : null)
