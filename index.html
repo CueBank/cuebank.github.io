@@ -3,13 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CueBank</title>
-<meta name="description" content="Turn the practice questions you already have into an exam-style question bank. For Mac, Windows, and Linux.">
+<title>CueBank: an exam-style question bank for your own practice questions</title>
+<meta name="description" content="CueBank turns multiple-choice questions from PDFs, practice exams, and notes into an exam-style question bank. Build custom tests, see explanations, and track scores by subject. For Mac, Windows, and Linux.">
+<link rel="canonical" href="https://cuebank.github.io/">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#13294b">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CueBank">
+<meta property="og:url" content="https://cuebank.github.io/">
+<meta property="og:title" content="CueBank: all your practice questions, in one place">
+<meta property="og:description" content="Turn multiple-choice questions from PDFs, practice exams, and notes into an exam-style question bank. Mac, Windows, and Linux.">
+<meta property="og:image" content="https://cuebank.github.io/img/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="CueBank showing a practice question beside a lab values panel">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CueBank: all your practice questions, in one place">
+<meta name="twitter:description" content="Turn multiple-choice questions from PDFs, practice exams, and notes into an exam-style question bank. Mac, Windows, and Linux.">
+<meta name="twitter:image" content="https://cuebank.github.io/img/social-card.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CueBank",
+  "url": "https://cuebank.github.io/",
+  "image": "https://cuebank.github.io/img/social-card.png",
+  "screenshot": "https://cuebank.github.io/img/question.png",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "macOS, Windows, Linux",
+  "downloadUrl": "https://github.com/lbhickman/cuebank/releases/latest",
+  "description": "CueBank turns multiple-choice questions from PDFs, practice exams, and notes into an exam-style question bank with custom tests, explanations, and performance by subject."
+}
+</script>
 <!--
   Download links point at the latest release of lbhickman/cuebank and pick the
-  .dmg, .exe or .AppImage automatically. Before going live, replace the three
-  screenshot placeholders with real images.
+  .dmg, .exe or .AppImage automatically.
 -->
 <style>
   :root {
@@ -73,6 +102,8 @@
   }
   .thanks b { color: var(--text); }
   .thanks .btn { margin-top: 10px; padding: 9px 18px; font-size: .95rem; }
+  .share-line { margin-top: 12px; font-size: .9rem; }
+  .link-btn { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--accent); cursor: pointer; text-decoration: underline; }
 
   .hero { text-align: center; padding: 48px 0 56px; }
   .hero img.app-icon { width: 112px; height: 112px; border-radius: 24px; box-shadow: 0 10px 30px rgba(19,41,75,.25); }
@@ -175,6 +206,7 @@
       <div class="thanks" id="thanks" role="status" hidden>
         <b>Thanks for downloading CueBank!</b> If CueBank helps you study, a tip helps fund the next features.<br>
         <a class="btn btn-coffee" href="https://buymeacoffee.com/lbrianhickman" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+        <div class="share-line">Know someone studying for a big exam? <button type="button" class="link-btn" id="share-btn">Share CueBank</button></div>
       </div>
     </div>
 
@@ -330,6 +362,17 @@
   const thanks = document.getElementById("thanks");
   [].concat(links.mac, links.win, links.linux).forEach(el => {
     el.addEventListener("click", () => { thanks.hidden = false; });
+  });
+
+  // Share button: the phone's share sheet where available, otherwise copy the link.
+  const shareBtn = document.getElementById("share-btn");
+  shareBtn.addEventListener("click", async () => {
+    const data = { title: "CueBank", text: "A study app that turns your practice questions into an exam-style question bank:", url: "https://cuebank.github.io/" };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(data.url);
+      shareBtn.textContent = "Link copied";
+    } catch (e) { /* share sheet closed */ }
   });
 
   fetch("https://api.github.com/repos/" + RELEASES_REPO + "/releases/latest")
